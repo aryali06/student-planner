@@ -1,0 +1,274 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>coursework — student planner</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=Nunito:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="styles.css">
+</head>
+<body>
+
+<div class="app">
+
+  <!-- ============ SIDEBAR ============ -->
+  <aside class="sidebar">
+    <div class="brand">
+      <span class="brand-mark">⌁</span>
+      <span class="brand-text">coursework</span>
+    </div>
+
+    <nav class="nav" id="nav">
+      <button class="nav-item is-active" data-view="dashboard">
+        <span class="nav-icon">◧</span><span>Dashboard</span>
+      </button>
+      <button class="nav-item" data-view="subjects">
+        <span class="nav-icon">▤</span><span>Subjects</span>
+      </button>
+      <button class="nav-item" data-view="tasks">
+        <span class="nav-icon">☑</span><span>Tasks</span>
+      </button>
+      <button class="nav-item" data-view="exams">
+        <span class="nav-icon">◈</span><span>Exams &amp; Assignments</span>
+      </button>
+      <button class="nav-item" data-view="grades">
+        <span class="nav-icon">◔</span><span>Grades</span>
+      </button>
+      <button class="nav-item" data-view="stopwatch">
+        <span class="nav-icon">◷</span><span>Stopwatch</span>
+      </button>
+      <button class="nav-item" data-view="studyroom">
+        <span class="nav-icon">✺</span><span>Study Room</span>
+      </button>
+    </nav>
+
+    <!-- mini persistent stopwatch, lives in sidebar so it keeps running across views -->
+    <div class="mini-watch" id="miniWatch">
+      <div class="mini-watch-time" id="miniWatchTime">00:00:00</div>
+      <div class="mini-watch-controls">
+        <button id="miniWatchToggle" class="mini-btn" title="Start / pause">▶</button>
+        <button id="miniWatchReset" class="mini-btn" title="Reset">↺</button>
+      </div>
+    </div>
+  </aside>
+
+  <!-- ============ MAIN ============ -->
+  <main class="main">
+
+    <!-- ---------- DASHBOARD ---------- -->
+    <section class="view is-active" id="view-dashboard">
+      <header class="view-header">
+        <div>
+          <p class="eyebrow" id="todayDate">—</p>
+          <h1>Welcome back</h1>
+        </div>
+      </header>
+
+      <div class="dash-grid">
+        <div class="card stat-card">
+          <span class="stat-value" id="statDueToday">0</span>
+          <span class="stat-label">due today</span>
+        </div>
+        <div class="card stat-card">
+          <span class="stat-value" id="statDueWeek">0</span>
+          <span class="stat-label">due this week</span>
+        </div>
+        <div class="card stat-card">
+          <span class="stat-value" id="statUpcomingExams">0</span>
+          <span class="stat-label">exams within 7 days</span>
+        </div>
+        <div class="card stat-card">
+          <span class="stat-value" id="statStudyWeek">0h 0m</span>
+          <span class="stat-label">studied this week</span>
+        </div>
+      </div>
+
+      <div class="dash-cols">
+        <div class="card panel">
+          <div class="panel-head">
+            <h2>Today &amp; overdue</h2>
+          </div>
+          <ul class="list" id="dashTaskList"><li class="empty">Nothing on the list yet.</li></ul>
+        </div>
+
+        <div class="card panel">
+          <div class="panel-head">
+            <h2>Coming up</h2>
+          </div>
+          <ul class="list" id="dashExamList"><li class="empty">No exams or assignments scheduled.</li></ul>
+        </div>
+      </div>
+
+      <div class="card panel">
+        <div class="panel-head">
+          <h2>Subjects</h2>
+          <button class="btn btn-ghost" data-goto="subjects">Manage subjects →</button>
+        </div>
+        <div class="subject-strip" id="dashSubjectStrip"><p class="empty">No subjects yet — add one to get started.</p></div>
+      </div>
+    </section>
+
+    <!-- ---------- SUBJECTS ---------- -->
+    <section class="view" id="view-subjects">
+      <header class="view-header">
+        <div>
+          <p class="eyebrow">Organise your workload</p>
+          <h1>Subjects</h1>
+        </div>
+        <button class="btn btn-primary" id="addSubjectBtn">+ Add subject</button>
+      </header>
+      <div class="grid-cards" id="subjectsGrid">
+        <p class="empty">No subjects yet. Add your first one to start tracking tasks, exams and grades.</p>
+      </div>
+    </section>
+
+    <!-- ---------- TASKS ---------- -->
+    <section class="view" id="view-tasks">
+      <header class="view-header">
+        <div>
+          <p class="eyebrow">Stay on top of it</p>
+          <h1>Tasks</h1>
+        </div>
+        <button class="btn btn-primary" id="addTaskBtn">+ Add task</button>
+      </header>
+
+      <div class="toolbar">
+        <div class="seg" id="taskGroupSeg">
+          <button class="seg-btn is-active" data-group="date">By date</button>
+          <button class="seg-btn" data-group="subject">By subject</button>
+        </div>
+        <select class="select" id="taskFilterSubject"><option value="all">All subjects</option></select>
+        <select class="select" id="taskFilterStatus">
+          <option value="all">All statuses</option>
+          <option value="todo">To do</option>
+          <option value="done">Done</option>
+        </select>
+      </div>
+
+      <div id="tasksContainer" class="stack-groups">
+        <p class="empty">No tasks yet.</p>
+      </div>
+    </section>
+
+    <!-- ---------- EXAMS ---------- -->
+    <section class="view" id="view-exams">
+      <header class="view-header">
+        <div>
+          <p class="eyebrow">Grouped by subject</p>
+          <h1>Exams &amp; Assignments</h1>
+        </div>
+        <button class="btn btn-primary" id="addExamBtn">+ Add exam / assignment</button>
+      </header>
+      <div id="examsContainer" class="stack-groups">
+        <p class="empty">Nothing scheduled yet.</p>
+      </div>
+    </section>
+
+    <!-- ---------- GRADES ---------- -->
+    <section class="view" id="view-grades">
+      <header class="view-header">
+        <div>
+          <p class="eyebrow">Track your performance</p>
+          <h1>Grades</h1>
+        </div>
+        <button class="btn btn-primary" id="addGradeBtn">+ Add grade</button>
+      </header>
+
+      <div class="card panel overall-panel">
+        <div>
+          <span class="overall-label">Overall average</span>
+          <span class="overall-value" id="overallAverage">—</span>
+        </div>
+      </div>
+
+      <div id="gradesContainer" class="stack-groups">
+        <p class="empty">No grades recorded yet.</p>
+      </div>
+    </section>
+
+    <!-- ---------- STOPWATCH ---------- -->
+    <section class="view" id="view-stopwatch">
+      <header class="view-header">
+        <div>
+          <p class="eyebrow">Time your focus</p>
+          <h1>Stopwatch</h1>
+        </div>
+      </header>
+
+      <div class="card panel stopwatch-panel">
+        <div class="stopwatch-display" id="stopwatchDisplay">00:00:00</div>
+        <div class="stopwatch-controls">
+          <button class="btn btn-primary btn-lg" id="swToggle">Start</button>
+          <button class="btn btn-ghost btn-lg" id="swLap">Lap</button>
+          <button class="btn btn-ghost btn-lg" id="swReset">Reset</button>
+        </div>
+        <div class="stopwatch-log-row">
+          <select class="select" id="swSubjectSelect"><option value="">No subject</option></select>
+          <input type="text" class="input" id="swNote" placeholder="What are you working on? (optional)">
+          <button class="btn btn-secondary" id="swSave">Save session</button>
+        </div>
+        <ul class="laps" id="swLaps"></ul>
+      </div>
+
+      <div class="card panel">
+        <div class="panel-head"><h2>Session history</h2></div>
+        <ul class="list" id="sessionHistory"><li class="empty">No sessions logged yet.</li></ul>
+      </div>
+    </section>
+
+    <!-- ---------- STUDY ROOM ---------- -->
+    <section class="view" id="view-studyroom">
+      <div class="room" id="room" data-mood="dusk">
+        <div class="room-ambience" id="roomAmbience" aria-hidden="true"></div>
+
+        <div class="room-content">
+          <button class="room-exit" id="roomExit" title="Exit study room">exit ✕</button>
+
+          <p class="room-quote" id="roomQuote">One task at a time.</p>
+
+          <div class="room-timer" id="roomTimer">00:00:00</div>
+          <div class="room-controls">
+            <button class="btn btn-room" id="roomToggle">Start focusing</button>
+            <button class="btn btn-room btn-room-ghost" id="roomReset">Reset</button>
+          </div>
+
+          <div class="room-focus-row">
+            <label class="room-label" for="roomSubjectSelect">Focusing on</label>
+            <select class="select select-room" id="roomSubjectSelect"><option value="">Pick a subject…</option></select>
+          </div>
+
+          <div class="room-moods" id="roomMoods">
+            <button class="mood-dot" data-mood="dusk" title="Dusk"></button>
+            <button class="mood-dot" data-mood="forest" title="Forest"></button>
+            <button class="mood-dot" data-mood="rain" title="Rain"></button>
+          </div>
+
+          <div class="room-checklist">
+            <div class="panel-head"><h2>Today's checklist</h2></div>
+            <ul class="list" id="roomChecklist"><li class="empty">No tasks due today. Enjoy the quiet.</li></ul>
+          </div>
+        </div>
+      </div>
+    </section>
+
+  </main>
+</div>
+
+<!-- ============ MODAL ============ -->
+<div class="modal-overlay" id="modalOverlay">
+  <div class="modal" role="dialog" aria-modal="true">
+    <div class="modal-head">
+      <h3 id="modalTitle">Add</h3>
+      <button class="modal-close" id="modalClose">✕</button>
+    </div>
+    <div class="modal-body" id="modalBody"></div>
+  </div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script src="app.js"></script>
+</body>
+</html>

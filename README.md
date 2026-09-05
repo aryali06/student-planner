@@ -1,12 +1,31 @@
-# Student Planner
+# coursework — student planner
 
-Cross-platform student planner for Android and Windows that imports calendars and automates assignment due dates and tasks. This repository contains the project plan, app spec, and theme presets to start implementation.
+A single-page student planner: subjects, tasks, exams/assignments (grouped by subject), grades with weighted averages, a stopwatch, and a "study room" focus mode. No build step, no backend — everything is plain HTML/CSS/JS and saves to your browser's `localStorage`.
 
-Files added/updated:
-- PROJECT_PLAN.md — MVP, roadmap, integrations, and milestones
-- APP_SPEC.md — architecture, data model, integration notes
-- themes/pastel_palettes.json — 4–6 color pastel palettes (includes pastel pink & purple)
+## Run it
 
-Recommended tech stack: Flutter (supports Android + Windows desktop), Dart, SQLite (sqflite) for local storage, background services for notifications, integration with Google Calendar API and Microsoft Graph for Outlook calendars.
+Just open `index.html` in a browser. For local development with live reload, any static server works, e.g.:
 
-Next steps: create a Flutter scaffold (UI + basic navigation), implement calendar imports, then implement automatic task/due-date generation and theme customization.
+```
+npx serve .
+```
+
+## Deploy to GitHub Pages
+
+1. Copy `index.html`, `styles.css`, and `app.js` into your `student-planner` repo (repo root, or a `/docs` folder).
+2. Commit and push.
+3. In the repo's Settings → Pages, set the source to the branch/folder you used.
+
+## Notes
+
+- Data lives only in the browser that created it (`localStorage`, key `coursework_planner_v1`). Clearing site data or switching browsers/devices starts fresh — there's no sync or account system.
+- Deleting a subject also deletes its tasks, exams, and grades (you'll get a confirmation first).
+- The stopwatch is a single shared timer — the mini widget in the sidebar, the Stopwatch page, and the Study Room all show the same running clock, so time keeps counting as you move between pages.
+- Grade weighting: each subject's average weights its entries by the "weight" you give them (defaults to 1 if left blank). The overall average is the mean of each subject's average.
+
+## Possible next steps
+
+- A light/dark toggle
+- Export/import your data as JSON (for backup or moving devices)
+- Recurring tasks
+- Pomodoro-style intervals in the Study Room, alongside the stopwatch
